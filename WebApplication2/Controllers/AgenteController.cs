@@ -26,7 +26,7 @@ namespace WebApplication2.Controllers
         public JsonResult Get()
         {
             string query = @"
-                            select NombreAgente, Tlf,Ubigeo,Direccion,latlng,estado from
+                            select AgenteId,NombreAgente, Tlf,Ubigeo,Direccion,latlng,estado from
                             dbo.Agente
                             ";
 

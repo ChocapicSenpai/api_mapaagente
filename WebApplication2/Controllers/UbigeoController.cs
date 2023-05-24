@@ -27,7 +27,7 @@ namespace WebApplication2.Controllers
 
         {
             string query = @"
-                            select NumeroUbigeo, DepartamentoUbigeo,ProvinciaUbigeo,DistritoUbigeo from
+                            select UbigeoId,NumeroUbigeo, DepartamentoUbigeo,ProvinciaUbigeo,DistritoUbigeo from
                             dbo.Ubigeo
                             ";
 
@@ -131,6 +131,7 @@ namespace WebApplication2.Controllers
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
                     myCommand.Parameters.AddWithValue("@UbigeoId", id);
+
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();

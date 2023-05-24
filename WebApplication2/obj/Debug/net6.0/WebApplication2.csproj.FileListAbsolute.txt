@@ -35,3 +35,8 @@ C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\obj\Debug\net6.
 C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\obj\Debug\net6.0\WebApplication2.pdb
 C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\obj\Debug\net6.0\WebApplication2.genruntimeconfig.cache
 C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\obj\Debug\net6.0\ref\WebApplication2.dll
+C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\u212prac01\source\repos\WebApplication2\WebApplication2\obj\Debug\net6.0\WebApplication2.MvcApplicationPartsAssemblyInfo.cs
