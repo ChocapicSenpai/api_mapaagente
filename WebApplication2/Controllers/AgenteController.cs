@@ -6,19 +6,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using WebApplication2.Models;
+using System.Net;
+using static WebApplication2.Controllers.AgenteController;
+using Newtonsoft.Json;
+using WebApplication2.Modelos;
+using Microsoft.Extensions.Options;
 
 namespace WebApplication2.Controllers
+
 {
     [Route("Agente")]
     [ApiController]
-    public class AgenteController : Controller
+    public class AgenteController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public AgenteController(IConfiguration configuration)
+        /*private readonly string _recaptchaSecretKey = "6Lfeqq8mAAAAADtUOnfc4FIS-tEMZ4GsfVWqU79N";*/
+        // Reemplaza esto con tu llave secreta de reCAPTCHA
+        private readonly RecaptchaSettings _recaptchaSettings;
+
+
+        public AgenteController(IConfiguration configuration, IOptions<RecaptchaSettings> recaptchaSettings)
         {
             _configuration = configuration;
+            _recaptchaSettings = recaptchaSettings.Value;
         }
 
 
@@ -26,8 +40,10 @@ namespace WebApplication2.Controllers
         public JsonResult Get()
         {
             string query = @"
-                            select AgenteId,NombreAgente, Tlf,Ubigeo,Direccion,latlng,estado from
-                            dbo.Agente
+                            SELECT A.AgenteId, A.NombreAgente, A.Tlf,A.Ubigeo,U.NumeroUbigeo, A.Direccion, A.latlng, A.estado
+                            FROM dbo.Agente A
+                            INNER JOIN dbo.Ubigeo U ON A.Ubigeo = U.UbigeoId
+                            
                             ";
 
             DataTable table = new DataTable();
@@ -47,11 +63,46 @@ namespace WebApplication2.Controllers
 
             return new JsonResult(table);
         }
-        
 
-        [HttpPost]
-        public JsonResult Post(Agente age)
+        /////
+        //// Método para validar el token de reCAPTCHA
+        private async Task<bool> ValidateCaptcha(string captcha)
         {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                string url = $"https://www.google.com/recaptcha/api/siteverify?secret={_recaptchaSettings.SecretKey}&response={captcha}";
+
+                HttpResponseMessage response = await httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var resultString = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<RecaptchaResponse>(resultString);
+                    return result.success;
+                }
+
+                return false;
+            }
+        }
+        public class RecaptchaResponse
+        {
+            public bool success { get; set; }
+            public DateTime challenge_ts { get; set; }
+            public string hostname { get; set; }
+            [JsonProperty("error-codes")]
+            public string[] error_codes { get; set; }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Post(Agente age)
+        {
+
+            
+            string captcha = age.captcha;
+
+            if (await ValidateCaptcha(captcha))
+            { 
+
             string query = @"
                             insert into dbo.Agente
                             values(@NombreAgente,@Tlf,@Ubigeo,@Direccion,@latlng,@estado)
@@ -80,17 +131,24 @@ namespace WebApplication2.Controllers
 
             return new JsonResult("Se añadio correctamente");
         }
-
+            else
+            {
+                return BadRequest("Ño");
+            }
+        }
        
+
+
         [HttpPut]
+
         public JsonResult Put(Agente age)
         {
             string query = @"
                             update dbo.Agente
-                            set NombreAgente=@NumeroUbigeo,
-                            Tlf=@DepartamentoUbigeo,
-                            Ubigeo=@ProvinciaUbigeo,
-                            Direccion=@DistritoUbigeo,
+                            set NombreAgente=@NombreAgente,
+                            Tlf=@Tlf,
+                            Ubigeo=@Ubigeo,
+                            Direccion=@Direccion,
                             latlng=@latlng,
                             estado=@estado
                             where AgenteId=@AgenteId

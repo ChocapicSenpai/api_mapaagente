@@ -14,5 +14,7 @@ namespace WebApplication2.Models
         public string Direccion { get; set; }
         public string latlng { get; set; }
         public string estado { get; set; }  
+ 
+        public string captcha { get; set; }
     }
 }

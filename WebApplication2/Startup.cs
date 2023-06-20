@@ -14,6 +14,8 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
+using WebApplication2.Modelos;
+
 
 namespace WebApplication2
 
@@ -30,6 +32,8 @@ namespace WebApplication2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<RecaptchaSettings>(Configuration.GetSection("RecaptchaSettings"));
+
             //Enable CORS
             services.AddCors(c =>
             {
