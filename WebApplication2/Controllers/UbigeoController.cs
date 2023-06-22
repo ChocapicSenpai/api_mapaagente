@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using WebApplication2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication2.Controllers
 {
@@ -50,8 +51,18 @@ namespace WebApplication2.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public JsonResult Post(Ubigeo ubi)
         {
+            if (
+                string.IsNullOrEmpty(ubi.NumeroUbigeo) ||
+                string.IsNullOrEmpty(ubi.DepartamentoUbigeo) ||
+                string.IsNullOrEmpty(ubi.ProvinciaUbigeo) ||
+                string.IsNullOrEmpty(ubi.DistritoUbigeo))
+            {
+                return new JsonResult("Error: Todos los campos son requeridos");
+            }
+
             string query = @"
                             insert into dbo.Ubigeo
                             values(@NumeroUbigeo,@DepartamentoUbigeo,@ProvinciaUbigeo,@DistritoUbigeo)
@@ -81,8 +92,17 @@ namespace WebApplication2.Controllers
 
 
         [HttpPut]
+        [Authorize]
         public JsonResult Put(Ubigeo ubi)
         {
+            if (
+                string.IsNullOrEmpty(ubi.NumeroUbigeo) ||
+                string.IsNullOrEmpty(ubi.DepartamentoUbigeo) ||
+                string.IsNullOrEmpty(ubi.ProvinciaUbigeo) ||
+                string.IsNullOrEmpty(ubi.DistritoUbigeo))
+            {
+                return new JsonResult("Error: Todos los campos son requeridos");
+            }
             string query = @"
                             update dbo.Ubigeo
                             set NumeroUbigeo=@NumeroUbigeo,
@@ -115,6 +135,7 @@ namespace WebApplication2.Controllers
             return new JsonResult("Se modifico correctamente");
         }
         [HttpDelete("{id}")]
+        [Authorize]
         public JsonResult Delete(int id)
         {
             string query = @"
